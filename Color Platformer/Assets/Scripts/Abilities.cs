@@ -25,16 +25,19 @@ public class Abilities : MonoBehaviour
         if (type == "Dash")
         {
             player.gameObject.AddComponent<Dash>();
+            collision.gameObject.GetComponent<SpriteRenderer>().color = GetComponent<SpriteRenderer>().color;
             gameObject.SetActive(false);
         }
         else if (type == "DoubleJump")
         {
             player.gameObject.AddComponent<DoubleJump>();
+            collision.gameObject.GetComponent<SpriteRenderer>().color = GetComponent<SpriteRenderer>().color;
             gameObject.SetActive(false);
         }
         else if (type == "WallClimb")
         {
             player.gameObject.AddComponent<WallClimb>();
+            collision.gameObject.GetComponent<SpriteRenderer>().color = GetComponent<SpriteRenderer>().color;
             gameObject.SetActive(false);
         }
     }
@@ -96,6 +99,7 @@ public class WallClimb : Abilities
         friction.friction = 0.1f;
         wall.sharedMaterial.friction = 0;
         player.canClimb = false;
+        GetComponent<SpriteRenderer>().color = Color.white;
         Destroy(this);
     }
 }

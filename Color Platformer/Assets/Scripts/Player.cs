@@ -63,12 +63,14 @@ public class Player : MonoBehaviour
         {
             rb.AddForce(dashSpeed * transform.right);
             //rb.velocity = new Vector2(dashSpeed * transform.right.x, 0);
+            GetComponent<SpriteRenderer>().color = Color.white;
             canDash = false;
         }
         if (!canJump && Input.GetKeyDown(jump) && canDoubleJump)
         {
             rb.velocity = new Vector2(rb.velocity.x, 0);
             rb.velocity += new Vector2(0, jumpHeight);
+            GetComponent<SpriteRenderer>().color = Color.white;
             canDoubleJump = false;
         }
         if (Input.GetKeyDown(jump) && canJump)
