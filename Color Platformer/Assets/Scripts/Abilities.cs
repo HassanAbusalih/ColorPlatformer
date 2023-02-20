@@ -25,17 +25,17 @@ public class Abilities : MonoBehaviour
         if (type == "Dash")
         {
             player.gameObject.AddComponent<Dash>();
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
         else if (type == "DoubleJump")
         {
             player.gameObject.AddComponent<DoubleJump>();
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
         else if (type == "WallClimb")
         {
             player.gameObject.AddComponent<WallClimb>();
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 
@@ -49,7 +49,7 @@ public class DoubleJump : Abilities
 {
     public override void UseAbility()
     {
-        player.canJump = true;
+        player.canDoubleJump = true;
         Destroy(this);
     }
 }
@@ -86,16 +86,16 @@ public class WallClimb : Abilities
     IEnumerator ClingToWall()
     {
         yield return new WaitUntil(() => wall != null);
-        yield return new WaitUntil(() => gameObject.GetComponent<Rigidbody2D>().IsTouching(wall));
+        yield return new WaitUntil(() => GetComponent<Rigidbody2D>().IsTouching(wall));
         player.canClimb = true;
         wall.sharedMaterial.friction = 1;
         friction.friction = 1;
-        if (!gameObject.GetComponent<Rigidbody2D>().IsTouching(wall))
-        {
-            friction.friction = 0.1f;
-            wall.sharedMaterial.friction = 0;
-            player.canClimb = false;
-            Destroy(this);
-        }
+        GetComponent<Rigidbody2D>().gravityScale = 0.5f;
+        yield return new WaitUntil(() => !GetComponent<Rigidbody2D>().IsTouching(wall));
+        GetComponent<Rigidbody2D>().gravityScale = 3;
+        friction.friction = 0.1f;
+        wall.sharedMaterial.friction = 0;
+        player.canClimb = false;
+        Destroy(this);
     }
 }

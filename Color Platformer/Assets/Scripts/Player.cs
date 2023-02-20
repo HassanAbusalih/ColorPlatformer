@@ -5,10 +5,12 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     /// <summary>
-    /// Handles player controls and movement.
+    /// Handles player controls and movement, as well as level completion.
     /// </summary>
+    [SerializeField] GameObject victoryPanel;
     Rigidbody2D rb;
-    public bool canJump;
+    bool canJump;
+    public bool canDoubleJump;
     public bool canDash;
     public bool canClimb;
     [SerializeField] float maxSpeed;
@@ -31,10 +33,13 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Move();
+        //if (!victoryPanel.activeSelf)
+        //{
+            Controls();
+        //}
     }
 
-    private void Move()
+    private void Controls()
     {
         if (Input.GetKey(up) && canClimb)
         {
@@ -56,21 +61,28 @@ public class Player : MonoBehaviour
         }
         if (Input.GetKey(dash) && canDash)
         {
-            //rb.AddForce(dashSpeed * transform.right);
-            rb.velocity = new Vector2(dashSpeed, 0);
+            rb.AddForce(dashSpeed * transform.right);
+            //rb.velocity = new Vector2(dashSpeed * transform.right.x, 0);
             canDash = false;
+        }
+        if (!canJump && Input.GetKeyDown(jump) && canDoubleJump)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, 0);
+            rb.velocity += new Vector2(0, jumpHeight);
+            canDoubleJump = false;
         }
         if (Input.GetKeyDown(jump) && canJump)
         {
             rb.velocity = new Vector2(rb.velocity.x, 0);
             rb.velocity += new Vector2(0, jumpHeight);
             canJump = false;
+
         }
         if (!Input.GetKey(left) && !Input.GetKey(right))
         {
             rb.velocity = new Vector2((float)(0.95 * rb.velocity.x), rb.velocity.y);
         }
-        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -maxSpeed, maxSpeed), Mathf.Clamp(rb.velocity.y, -10, 10));
+        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, -maxSpeed, maxSpeed), Mathf.Clamp(rb.velocity.y, -10, 10.2f));
     }
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -79,10 +91,6 @@ public class Player : MonoBehaviour
         {
             canJump = true;
         }
-        if (collision.gameObject.CompareTag("Wall"))
-        {
-            //canClimb = true;
-        }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -90,10 +98,6 @@ public class Player : MonoBehaviour
         if (collision.gameObject.CompareTag("Floor"))
         {
             canJump = false;
-        }
-        if (collision.gameObject.CompareTag("Wall"))
-        {
-            //canClimb = false;
         }
     }
 }
