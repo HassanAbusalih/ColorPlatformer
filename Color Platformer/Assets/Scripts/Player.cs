@@ -23,6 +23,9 @@ public class Player : MonoBehaviour
     [SerializeField] KeyCode right;
     [SerializeField] KeyCode jump;
     [SerializeField] KeyCode dash;
+    [SerializeField] AudioClip jumpSound;
+    [SerializeField] AudioSource jumpPlay;
+    
 
     // Start is called before the first frame update
     void Start()
@@ -33,10 +36,10 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (!victoryPanel.activeSelf)
-        //{
+        if (!victoryPanel.activeSelf)
+        {
             Controls();
-        //}
+        }
     }
 
     private void Controls()
@@ -71,12 +74,14 @@ public class Player : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, 0);
             rb.velocity += new Vector2(0, jumpHeight);
             GetComponent<SpriteRenderer>().color = Color.white;
+            jumpPlay.PlayOneShot(jumpSound);
             canDoubleJump = false;
         }
         if (Input.GetKeyDown(jump) && canJump)
         {
             rb.velocity = new Vector2(rb.velocity.x, 0);
             rb.velocity += new Vector2(0, jumpHeight);
+            jumpPlay.PlayOneShot(jumpSound);
             canJump = false;
 
         }
